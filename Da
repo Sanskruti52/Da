@@ -1,0 +1,567 @@
+Slip No:-4
+
+Build a simple linear regression model for Fish Species Weight 
+
+Prediction.
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+
+from matplotlib import pyplot as plt
+
+df = pd.read_csv("fish.csv")
+
+print(df.head(5))
+
+3X = df[['Species', 'Weight', 'Length', 'Diagonal','Height', 'Width']]
+
+Y = df['Weight']
+
+x_train,x_test,y_train,y_test = train_test_split(X,Y,test_size=0.3)
+
+print("\n Training Set of X=\n",x_train.head(5))
+
+print("\n Testing Set of X=\n",x_test.head(5))
+
+print("\n Training Set of Y=\n",y_train.head(5))
+
+print("\n Testing Set of Y=\n",y_test.head(5))
+
+Slip No:-5
+
+Use the iris dataset. Write a Python program to view some basic 
+
+statistical details like percentile,
+
+mean, std etc. of the species of 'Iris-setosa', 'Iris-versicolor' and 
+
+'Iris-virginica'. Apply logistic regression
+
+on the dataset to identify different species (setosa, versicolor, 
+
+verginica) of Iris flowers given just 4
+
+features: sepal and petal lengths and widths.. Find the accuracy of the 
+
+model.
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.metrics import accuracy_score, classification_report,␣
+
+↪confusion_matrix
+
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+
+iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+
+iris_df['Species'] = iris.target_names[iris.target]
+
+for species in iris_df['Species'].unique():
+
+species_data = iris_df[iris_df['Species'] == species].
+
+↪drop(columns='Species')
+
+print(f"\nStatistical Details for {species}:")
+
+print(species_data.describe())
+
+X = iris_df.iloc[:, :4]
+
+y = iris_df['Species']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, 
+
+test_size=0.2,␣
+
+↪random_state=42)
+
+model = LogisticRegression(max_iter=1000)
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nAccuracy:", accuracy)
+
+print("\nClassification Report:")
+
+print(classification_report(y_test, y_pred))
+
+print("\nConfusion Matrix:")
+
+print(confusion_matrix(y_test, y_pred))
+
+Slip No:-6
+
+Create the following dataset in python & Convert the categorical values 
+
+into numeric format.Apply
+
+the apriori algorithm on the above dataset to generate the frequent 
+
+itemsets and association rules. Repeat
+
+the process with different min_sup values.
+
+(slip No:-10 mdhe table bghun ghya)
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+data= [['Bread','Milk'],
+
+['Bread','Diaper','Beer','Eggs'],
+
+['Milk','Diaper','Beer','Coke'],
+
+['Bread','Milk','Diaper','Beer'],
+
+['Bread','Milk','Diaper','Coke']
+
+]
+
+df = pd.DataFrame(data)
+
+print(df)
+
+from mlxtend.preprocessing import TransactionEncoder
+
+te=TransactionEncoder()
+
+te_array=te.fit(data).transform(data)
+
+df=pd.DataFrame(te_array, columns=te.columns_)
+
+print(df)
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', 
+
+min_threshold=0.05)
+
+rules = rules.sort_values(['support', 'confidence'], ascending 
+
+=[False,False])
+
+print(rules)
+
+Slip No:-7
+
+Download the Market basket dataset. Write a python program to read the 
+
+dataset and display its
+
+information. Preprocess the data (drop null values etc.) Convert the 
+
+categorical values into numeric
+
+format. Apply the apriori algorithm on the above dataset to generate the 
+
+frequent itemsets and association
+
+rules.
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+from mlxtend.preprocessing import TransactionEncoder
+
+import numpy as np
+
+# Read a subset of rows from the CSV file
+
+d = pd.read_csv('store_data.csv', nrows=1000)
+
+# Adjust the number of rows as␣
+
+# Fill missing values with 'Hi'
+
+d = d.fillna("Hi")
+
+# Convert DataFrame to transaction format
+
+transactions = d.values.tolist()
+
+# Transforming data into transaction format
+
+te = TransactionEncoder()
+
+te_array = te.fit(transactions).transform(transactions)
+
+df = pd.DataFrame(te_array, columns=te.columns_)
+
+# Find frequent itemsets
+
+min_support = 0.00000001
+
+freq_items = apriori(df, min_support=min_support, use_colnames=True)
+
+print("Frequent Itemsets:")
+
+print(freq_items)
+
+# Find association rules
+
+min_threshold = 0.05
+
+rules = association_rules(freq_items, metric='support',␣
+
+↪min_threshold=min_threshold)
+
+rules = rules.sort_values(['support', 'confidence'], ascending=[False, 
+
+False])
+
+print("Association Rules:")
+
+print(rules)
+
+Slip No:-8
+
+Download the groceries dataset. Write a python program to read the 
+
+dataset and display its
+
+information. Preprocess the data (drop null values etc.) Convert the 
+
+categorical values into numeric
+
+format. Apply the apriori algorithm on the above dataset to generate the 
+
+frequent itemsets and association
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+from mlxtend.preprocessing import TransactionEncoder # Import␣
+
+↪TransactionEncoder
+
+dataset_path = 'Groceries_dataset.csv'
+
+data = pd.read_csv(dataset_path)
+
+print("Dataset Information:")
+
+print(data.info())
+
+data.dropna(inplace=True)
+
+transactions = []
+
+for index, row in data.iterrows():
+
+transactions.append([str(item) for item in row if pd.notnull(item)])
+
+te = TransactionEncoder()
+
+te_ary = te.fit(transactions).transform(transactions)
+
+df_encoded = pd.DataFrame(te_ary, columns=te.columns_)
+
+min_support = 0.01 # Adjust support threshold as needed
+
+frequent_itemsets = apriori(df_encoded, min_support=min_support,␣
+
+↪use_colnames=True)
+
+min_confidence = 0.5
+
+rules = association_rules(frequent_itemsets, metric="confidence",␣
+↪min_threshold=min_confidence)
+
+print("\nFrequent Itemsets:")
+
+print(frequent_itemsets)
+
+print("\nAssociation Rules:")
+
+print(rules)
+
+Slip No:-9
+
+Create your own transactions dataset and apply the above process on your 
+
+dataset.
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+data = [['Sheldon', 'Penny', 'Amy', 'Penny', 'Raj', 'Sheldon'],
+
+['male', 'female', 'female', 'female', 'male', 'male']]
+
+print(data)
+
+df = pd.DataFrame(data)
+
+print(df)
+
+from mlxtend.preprocessing import TransactionEncoder
+
+te=TransactionEncoder()
+
+te_array=te.fit(data).transform(data)
+
+df=pd.DataFrame(te_array, columns=te.columns_)
+
+print(df)
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+
+print(freq_items)
+
+2rules = association_rules(freq_items, metric ='support', 
+
+min_threshold=0.05)
+
+rules = rules.sort_values(['support', 'confidence'], ascending 
+
+=[False,False])
+
+print(rules)
+
+Slip No:-10
+
+Create the following dataset in python & Convert the categorical values 
+
+into numeric format.Apply
+
+the apriori algorithm on the above dataset to generate the frequent 
+
+itemsets and association rules. Repeat
+
+the process with different min_sup values.
+
+(slip No:-10 mdhe table bghun ghya)
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+data= [['eggs','Milk','Bread'],
+
+['Eggs','apple'],
+
+['Milk','bread'],
+
+['apple','Milk'],
+
+['Bread','Milk','apple']
+
+]
+
+df = pd.DataFrame(data)
+
+print(df)
+
+from mlxtend.preprocessing import TransactionEncoder
+
+te=TransactionEncoder()
+
+te_array=te.fit(data).transform(data)
+
+df=pd.DataFrame(te_array, columns=te.columns_)
+
+print(df)
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', 
+
+min_threshold=0.05)
+
+rules = rules.sort_values(['support', 'confidence'], ascending 
+
+=[False,False])
+
+print(rules)
+
+Slip No:-11
+
+create the following dataset in python & Convert the categorical values 
+
+into numeric format.Apply
+
+the apriori algorithm on the above dataset to generate the frequent 
+
+itemsets and associationrules. Repeat
+
+the process with different min_sup values.
+
+(slip No:-11 mdhe table bghun ghya)
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+data= [['butter','bread','milk'],
+
+['butter','flour','milk','sugar'],
+
+['butter','eggs','milk','sugar'],
+
+['eggs'],
+
+['butter','flour','milk','salt']
+
+]
+
+df = pd.DataFrame(data)
+
+print(df)
+
+from mlxtend.preprocessing import TransactionEncoder
+
+te=TransactionEncoder()
+
+te_array=te.fit(data).transform(data)
+
+df=pd.DataFrame(te_array, columns=te.columns_)
+
+print(df)
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', 
+
+min_threshold=0.05)
+
+rules = rules.sort_values(['support', 'confidence'], ascending 
+
+=[False,False])
+
+print(rules)
+
+Slip No:-14
+
+Create the following dataset in python & Convert the categorical values 
+
+into numeric format.Apply
+
+the apriori algorithm on the above dataset to generate the frequent 
+
+itemsets and association rules. Repeat
+
+the process with different min_sup values.
+
+(slip No:-14 madhe table bghun ghya)
+
+import pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+data= [['apple','mango','banana'],
+
+['mango','banana','cabbage','carrots'],
+
+['mango','banana','carrots'],['mango','carrots']
+
+]
+
+df = pd.DataFrame(data)
+
+print(df)
+
+from mlxtend.preprocessing import TransactionEncoder
+
+te=TransactionEncoder()
+
+te_array=te.fit(data).transform(data)
+
+df=pd.DataFrame(te_array, columns=te.columns_)
+
+print(df)
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', 
+
+min_threshold=0.05)
+
+rules = rules.sort_values(['support', 'confidence'], ascending 
+
+=[False,False])
+
+print(rules)
+
+Slip No:-30
+
+Create the dataset . transactions = [['eggs', 'milk','bread'], ['eggs', 
+
+'apple'], ['milk', 'bread'], ['apple',
+
+'milk'], ['milk', 'apple', 'bread']] .
+
+Convert the categorical values into numeric format.Apply the apriori 
+
+algorithm on the above dataset to
+
+generate the frequent itemsets and association rules.
+
+mport pandas as pd
+
+from mlxtend.frequent_patterns import apriori, association_rules
+
+data= [['eggs','Milk','Bread'],
+
+['Eggs','apple'],
+
+['Milk','bread'],
+
+['apple','Milk'],
+
+['Bread','Milk','apple']
+
+]
+
+df = pd.DataFrame(data)
+
+print(df)
+
+from mlxtend.preprocessing import TransactionEncoder
+
+te=TransactionEncoder()
+
+te_array=te.fit(data).transform(data)
+
+df=pd.DataFrame(te_array, columns=te.columns_)
+
+print(df)
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', 
+
+min_threshold=0.05)
+
+rules = rules.sort_values(['support', 'confidence'], ascending 
+
+=[False,False])
+
+print(rules)
